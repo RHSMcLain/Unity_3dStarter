@@ -34,13 +34,14 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             Vector2 inputDir = moveAction.ReadValue<Vector2>();
-            //Vector3 moveDir = new Vector3(inputDir.x, 0f, inputDir.y) * Time.deltaTime * speed;
-            Vector3 moveDir = (transform.forward * inputDir.y + transform.right * inputDir.x);
-            moveDir = moveDir.normalized * speed;
+            
+            //Vector3 moveDir = new Vector3(inputDir.x, 0f, inputDir.y) * Time.deltaTime * speed; //would move according to world axes
+            Vector3 moveDir = (transform.forward * inputDir.y + transform.right * inputDir.x); //sets movement to be based on where the player is facing
+            moveDir = moveDir.normalized * speed;  //we balance the direction to a magnitue of 1, then multiply by our desired speed
 
 
-            // rb.AddForce(moveDir, ForceMode.Impulse);
-            rb.linearVelocity = moveDir; // set the speed directly
+            // rb.AddForce(moveDir, ForceMode.Impulse);  //this line adds force -- so there's a ramp up time
+            rb.linearVelocity = moveDir; // set the speed directly, instead
         }
         if (transform.position.y < -2)
         {
