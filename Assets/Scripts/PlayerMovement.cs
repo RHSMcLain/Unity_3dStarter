@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     InputAction moveAction;
     Vector3 startLocation;
     Quaternion startRotation;
+    bool isGrounded = false;
    void Start()
     {
         print("test");
@@ -30,21 +31,30 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //
-        Vector2 inputDir = moveAction.ReadValue<Vector2>();
-        //Vector3 moveDir = new Vector3(inputDir.x, 0f, inputDir.y) * Time.deltaTime * speed;
-        Vector3 moveDir = (transform.forward * inputDir.y + transform.right * inputDir.x) * Time.deltaTime * speed;
+        if (isGrounded)
+        {
+            Vector2 inputDir = moveAction.ReadValue<Vector2>();
+            //Vector3 moveDir = new Vector3(inputDir.x, 0f, inputDir.y) * Time.deltaTime * speed;
+            Vector3 moveDir = (transform.forward * inputDir.y + transform.right * inputDir.x);
+            moveDir = moveDir.normalized * speed;
 
 
-        rb.AddForce(moveDir, ForceMode.Impulse);
-
+            // rb.AddForce(moveDir, ForceMode.Impulse);
+            rb.linearVelocity = moveDir; // set the speed directly
+        }
         if (transform.position.y < -2)
         {
             die();
         }
 
     }
+    void OnCollisionEnter(Collision collision)
+    {
+        isGrounded = true;
+    }
     void OnJump()
     {
+        isGrounded = false;
         print("Jjasdifjaighigaehgiuahgiouha");
         rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
     }
