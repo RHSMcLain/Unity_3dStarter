@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     Quaternion startRotation;
    void Start()
     {
+        print("test");
         rb = GetComponent<Rigidbody>();
         moveAction = InputSystem.actions.FindAction("Move");
         startLocation = transform.position;
