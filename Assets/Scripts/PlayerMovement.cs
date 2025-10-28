@@ -58,13 +58,24 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
-        print("enter");
-        isGrounded = true;
+        ContactPoint cp = collision.GetContact(0);
+        if (cp.thisCollider.gameObject.tag == "foot")
+        {
+            print("footCooll");
+            print("enter");
+            isGrounded = true;
+        }
+        
     }
     void OnCollisionExit(Collision collision)
     {
-        print("exit");
-        isGrounded = false;
+        ContactPoint cp = collision.GetContact(0);
+        if (cp.thisCollider.gameObject.tag == "foot")
+        {
+            print("--footCooll");
+            print("exit--");
+            isGrounded = false;
+        }
     }
     void OnJump()
     {
