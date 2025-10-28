@@ -58,9 +58,14 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
+        print("enter");
         isGrounded = true;
     }
-
+    void OnCollisionExit(Collision collision)
+    {
+        print("exit");
+        isGrounded = false;
+    }
     void OnJump()
     {
         if (isGrounded)
