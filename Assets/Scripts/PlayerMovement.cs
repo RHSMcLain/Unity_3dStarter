@@ -4,13 +4,18 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
     float speed = 5f, jumpPower = 3f, sprintSpeed = 15f;
+    [SerializeField]
+    int maxHitPoints = 10;
+    int hitpoints;
     Rigidbody rb;
     InputAction moveAction;
     Vector3 startLocation;
     Quaternion startRotation;
     bool isGrounded = false, isSprinting = false;
+    //TODO: create the public void takeDamage, and then have the enemy call it.
    void Start()
     {
+        hitpoints = maxHitPoints;
         print("test");
         rb = GetComponent<Rigidbody>();
         moveAction = InputSystem.actions.FindAction("Move");
@@ -107,6 +112,14 @@ public class PlayerMovement : MonoBehaviour
         transform.position = startLocation;
         transform.rotation = startRotation;
 
+    }
+    public void takeDamage(int damage)
+    {
+        hitpoints -= damage;
+        if (hitpoints <= 0)
+        {
+            die();
+        }
     }
 
 }
