@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
@@ -11,10 +12,12 @@ public class PlayerMovement : MonoBehaviour
     InputAction moveAction;
     Vector3 startLocation;
     Quaternion startRotation;
+    GameObject foot;
     bool isGrounded = false, isSprinting = false;
     //TODO: create the public void takeDamage, and then have the enemy call it.
    void Start()
     {
+        
         hitpoints = maxHitPoints;
         print("test");
         rb = GetComponent<Rigidbody>();
@@ -38,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //
-        if (isGrounded)
+        if (groundCheck())
         {
             float currSpeed = speed;
             if (isSprinting)
@@ -74,13 +77,14 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnCollisionExit(Collision collision)
     {
+        print("exit");
         try
         {
             ContactPoint cp = collision.GetContact(0);
             if (cp.thisCollider.gameObject.tag == "foot")
             {
                 print("--footCooll");
-                print("exit--");
+             
                 isGrounded = false;
             }
         }
@@ -92,11 +96,10 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnJump()
     {
-        if (isGrounded)
+        if (groundCheck())
         {
 
             isGrounded = false;
-            print("Jjasdifjaighigaehgiuahgiouha");
             rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
         }
     }
@@ -120,6 +123,25 @@ public class PlayerMovement : MonoBehaviour
         {
             die();
         }
+    }
+    bool groundCheck()
+    {
+        //this function checks if we are within a short space vertically from a ground object. 
+        LayerMask groundMask = LayerMask.GetMask("Ground");
+
+        
+        // if (Physics.Raycast(transform.position, Vector3.down, out hit, 1.5f, groundMask))
+        if (Physics.CheckSphere(transform.position - new Vector3(0f, 0.5f, 0f), (transform.localScale.y * 1.1f)/2f, groundMask))
+        {
+            print("ground");
+            return true;
+        }
+        else
+        {
+            print("air");
+            return false;
+        }
+
     }
 
 }

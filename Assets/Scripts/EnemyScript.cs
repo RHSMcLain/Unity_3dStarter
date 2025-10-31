@@ -10,18 +10,20 @@ public class EnemyScript : MonoBehaviour
     float attackTimer = 0f;
     PlayerMovement player;
     NavMeshAgent agent;
+    Quaternion r;
     //TODO: Get the player by its type instead, and when I hit it, call its takeDamage function
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         player = FindFirstObjectByType<PlayerMovement>();
         agent = GetComponent<NavMeshAgent>();
-
+        r = transform.rotation;
     }
 
     // Update is called once per frame
     void Update()
     {
+        transform.rotation = Quaternion.Euler(270, transform.rotation.y, transform.rotation.z);
         attackTimer += Time.deltaTime;
 
         bool hasDestination = agent.SetDestination(player.transform.position);

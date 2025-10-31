@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 205564792}
   - component: {fileID: 205564791}
   - component: {fileID: 205564790}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,7 +354,7 @@ GameObject:
   - component: {fileID: 232335537}
   - component: {fileID: 232335536}
   - component: {fileID: 232335535}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -731,6 +731,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   attackDelay: 1
+  attackDistance: 2
   destination: {x: 0, y: 0, z: 0}
 --- !u!195 &398668463
 NavMeshAgent:
@@ -893,7 +894,7 @@ GameObject:
   - component: {fileID: 688617027}
   - component: {fileID: 688617026}
   - component: {fileID: 688617025}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1195,7 +1196,7 @@ GameObject:
   - component: {fileID: 832567787}
   - component: {fileID: 832567786}
   - component: {fileID: 832567785}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1577,7 +1578,7 @@ GameObject:
   - component: {fileID: 1537417092}
   - component: {fileID: 1537417091}
   - component: {fileID: 1537417090}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1689,7 +1690,7 @@ GameObject:
   - component: {fileID: 2091065341}
   - component: {fileID: 2091065340}
   - component: {fileID: 2091065344}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
