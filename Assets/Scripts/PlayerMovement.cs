@@ -4,16 +4,18 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
-    float speed = 5f, jumpPower = 3f, sprintSpeed = 15f;
+    float speed = 5f, jumpPower = 3f, sprintSpeed = 15f, laserDuration = 0.1f;
     [SerializeField]
     int maxHitPoints = 10;
     int hitpoints;
     Rigidbody rb;
+    LineRenderer lr;
     InputAction moveAction;
     Vector3 startLocation;
     Quaternion startRotation;
     GameObject foot;
     bool isGrounded = false, isSprinting = false;
+    float laserTimer = 0f;
     //TODO: create the public void takeDamage, and then have the enemy call it.
    void Start()
     {
@@ -21,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
         hitpoints = maxHitPoints;
         print("test");
         rb = GetComponent<Rigidbody>();
+        lr = GetComponent<LineRenderer>();
+        lr.material = new Material(Shader.Find("Sprites/Default"));
         moveAction = InputSystem.actions.FindAction("Move");
         startLocation = transform.position;
         startRotation = transform.rotation;
@@ -30,10 +34,16 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         //MOUSE CONTROLS
+        laserTimer += Time.deltaTime;
         Plane plane = new Plane(Vector3.up, transform.position.y);
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         float hit;
+        //turn off the laser if the time has passed
+        if (laserTimer > laserDuration)
+        {
+            lr.enabled = false;
+        }
         if (plane.Raycast(ray, out hit))
         {
             Vector3 hitPoint = ray.GetPoint(hit);
@@ -84,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
             if (cp.thisCollider.gameObject.tag == "foot")
             {
                 print("--footCooll");
-             
+
                 isGrounded = false;
             }
         }
@@ -92,6 +102,39 @@ public class PlayerMovement : MonoBehaviour
         {
             print("nope");
         }
+
+    }
+    void OnAttack()
+    {
+        print("attack");
+        RaycastHit hit; //holds information about where the ray hits
+
+        if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity))
+        {
+            //means we hit something
+            //set our line renderer to stop there.
+            print("Hit");
+            lr.SetPosition(0, transform.position); //starts at ourselves
+            lr.SetPosition(1, hit.point);
+            lr.enabled = true;
+            laserTimer = 0f;
+            //if it's an enemy, do damage to the enemy
+            if (hit.collider.gameObject.CompareTag("Enemy"))
+            {
+                //do damage to the enemy
+                Destroy(hit.collider.gameObject);
+            }
+
+        }
+        else
+        {
+            //we missed, but we still have to draw a laser
+            lr.SetPosition(0, transform.position);
+            lr.SetPosition(1, transform.position + transform.forward * 20);
+            lr.enabled = true;
+            laserTimer = 0f;
+        }
+
         
     }
     void OnJump()
