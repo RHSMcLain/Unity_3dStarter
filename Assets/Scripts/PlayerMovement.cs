@@ -3,14 +3,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
+    enum lookMode  {raycast, lookAction};
     [SerializeField]
-    float speed = 5f, jumpPower = 3f, sprintSpeed = 15f, laserDuration = 0.1f;
+    lookMode currMode = lookMode.raycast;
+    [SerializeField]
+    float speed = 5f, jumpPower = 3f, sprintSpeed = 15f, laserDuration = 0.1f, turnSpeed = 5f;
     [SerializeField]
     int maxHitPoints = 10;
     int hitpoints;
     Rigidbody rb;
     LineRenderer lr;
-    InputAction moveAction;
+    InputAction moveAction, lookAction;
     Vector3 startLocation;
     Quaternion startRotation;
     GameObject foot;
@@ -21,11 +24,12 @@ public class PlayerMovement : MonoBehaviour
     {
         
         hitpoints = maxHitPoints;
-        print("test");
         rb = GetComponent<Rigidbody>();
         lr = GetComponent<LineRenderer>();
         lr.material = new Material(Shader.Find("Sprites/Default"));
         moveAction = InputSystem.actions.FindAction("Move");
+
+        lookAction = InputSystem.actions.FindAction("Look");
         startLocation = transform.position;
         startRotation = transform.rotation;
     }
@@ -35,20 +39,22 @@ public class PlayerMovement : MonoBehaviour
     {
         //MOUSE CONTROLS
         laserTimer += Time.deltaTime;
-        Plane plane = new Plane(Vector3.up, transform.position.y);
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        float hit;
+        
         //turn off the laser if the time has passed
         if (laserTimer > laserDuration)
         {
             lr.enabled = false;
         }
-        if (plane.Raycast(ray, out hit))
+        switch (currMode)
         {
-            Vector3 hitPoint = ray.GetPoint(hit);
-            transform.LookAt(new Vector3(hitPoint.x, transform.position.y, hitPoint.z));
+            case lookMode.raycast:
+                raycastLook();
+                break;
+            case lookMode.lookAction:
+                actionLook();
+                break;
         }
+
 
         //
         if (groundCheck())
@@ -59,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
                 currSpeed = sprintSpeed;
             }
             Vector2 inputDir = moveAction.ReadValue<Vector2>();
-            
+
             //Vector3 moveDir = new Vector3(inputDir.x, 0f, inputDir.y) * Time.deltaTime * speed; //would move according to world axes
             Vector3 moveDir = (transform.forward * inputDir.y + transform.right * inputDir.x); //sets movement to be based on where the player is facing
             moveDir = moveDir.normalized * currSpeed;  //we balance the direction to a magnitue of 1, then multiply by our desired speed
@@ -74,6 +80,27 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
+    void raycastLook()
+    {
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        float hit;
+        Plane plane = new Plane(Vector3.up, transform.position.y);
+
+        if (plane.Raycast(ray, out hit))
+        {
+            Vector3 hitPoint = ray.GetPoint(hit);
+            transform.LookAt(new Vector3(hitPoint.x, transform.position.y, hitPoint.z));
+        }
+    }
+    void actionLook()
+    {
+        Vector2 mouseDelta = lookAction.ReadValue<Vector2>();
+        print(mouseDelta);
+        transform.Rotate(new Vector3(0f, mouseDelta.x, 0f) * Time.deltaTime * turnSpeed);
+
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         ContactPoint cp = collision.GetContact(0);
