@@ -148,7 +148,12 @@ public class PlayerMovement : MonoBehaviour
         Vector3 direction = transform.forward;
         if (currMode == lookMode.noRotation)
         {
-            direction = getMouseLocation() - transform.position;
+            Vector3 mouseDir = getMouseLocation();
+
+            mouseDir.y = transform.position.y;
+           
+            direction = mouseDir - transform.position;
+            print(direction);
             //now we're going to target the mouse instead of the forward direction
 
         }
@@ -176,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
         {
             //we missed, but we still have to draw a laser
             lr.SetPosition(0, transform.position);
-            lr.SetPosition(1, transform.position + transform.forward * 20);
+            lr.SetPosition(1, transform.position + direction * 20);
             lr.enabled = true;
             laserTimer = 0f;
         }
