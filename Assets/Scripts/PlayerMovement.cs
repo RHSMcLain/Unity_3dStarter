@@ -153,7 +153,7 @@ public class PlayerMovement : MonoBehaviour
             mouseDir.y = transform.position.y;
            
             direction = mouseDir - transform.position;
-            print(direction);
+      
             //now we're going to target the mouse instead of the forward direction
 
         }
