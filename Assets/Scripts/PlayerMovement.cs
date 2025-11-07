@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
-    enum lookMode  {raycast, lookAction};
+    enum lookMode  {raycast, lookAction, noRotation};
     [SerializeField]
     lookMode currMode = lookMode.raycast;
     [SerializeField]
@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //MOUSE CONTROLS
         laserTimer += Time.deltaTime;
-        
+
         //turn off the laser if the time has passed
         if (laserTimer > laserDuration)
         {
@@ -52,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case lookMode.lookAction:
                 actionLook();
+                break;
+            case lookMode.noRotation:
                 break;
         }
 
@@ -80,7 +82,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
-    void raycastLook()
+    Vector3 getMouseLocation()
     {
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
@@ -90,8 +92,18 @@ public class PlayerMovement : MonoBehaviour
         if (plane.Raycast(ray, out hit))
         {
             Vector3 hitPoint = ray.GetPoint(hit);
-            transform.LookAt(new Vector3(hitPoint.x, transform.position.y, hitPoint.z));
+            return hitPoint;
+
         }
+        else
+        {
+            return Vector3.zero;
+        }
+    }
+    void raycastLook()
+    {
+            Vector3 hitPoint = getMouseLocation();
+            transform.LookAt(new Vector3(hitPoint.x, transform.position.y, hitPoint.z)); 
     }
     void actionLook()
     {
@@ -133,10 +145,17 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnAttack()
     {
+        Vector3 direction = transform.forward;
+        if (currMode == lookMode.noRotation)
+        {
+            direction = getMouseLocation() - transform.position;
+            //now we're going to target the mouse instead of the forward direction
+
+        }
         print("attack");
         RaycastHit hit; //holds information about where the ray hits
 
-        if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity))
+        if (Physics.Raycast(transform.position, direction, out hit, Mathf.Infinity))
         {
             //means we hit something
             //set our line renderer to stop there.
