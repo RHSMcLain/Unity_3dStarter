@@ -153,7 +153,7 @@ public class PlayerMovement : MonoBehaviour
             mouseDir.y = transform.position.y;
            
             direction = mouseDir - transform.position;
-      
+            transform.LookAt(mouseDir);      
             //now we're going to target the mouse instead of the forward direction
 
         }
@@ -173,6 +173,8 @@ public class PlayerMovement : MonoBehaviour
             if (hit.collider.gameObject.CompareTag("Enemy"))
             {
                 //do damage to the enemy
+                EnemyScript.enemyCount--;
+                
                 Destroy(hit.collider.gameObject);
             }
 

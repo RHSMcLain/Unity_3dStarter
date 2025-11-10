@@ -3,6 +3,7 @@ using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour
 {
+    public static int enemyCount = 0;
     [SerializeField]
     float attackDelay = 1f, attackDistance = 2f;
     [SerializeField]
@@ -18,6 +19,7 @@ public class EnemyScript : MonoBehaviour
         player = FindFirstObjectByType<PlayerMovement>();
         agent = GetComponent<NavMeshAgent>();
         r = transform.rotation;
+        EnemyScript.enemyCount++;
     }
 
     // Update is called once per frame
